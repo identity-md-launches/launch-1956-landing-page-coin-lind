@@ -2,8 +2,12 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile, stat, mkdir, writeFile } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
-import { chromium, webkit } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
+
+const playwrightOption = process.argv.indexOf('--playwright');
+const { chromium, webkit } = await import(
+  playwrightOption === -1 ? 'playwright' : process.argv[playwrightOption + 1]
+);
 
 const address = '7eJWuvU1JHskxsRNFomerJLHdjoiHR6QhSTm7GgH7rU3';
 const launchUrl = `https://lindylaunch.fun/r/${address}`;
@@ -76,7 +80,7 @@ try {
       browser = await browserType.launch({ headless: true });
     } catch (error) {
       report.limitations.push(
-        `${engine} could not launch: ${error.message.replaceAll(/\u001b\[[0-9;]*m/g, '')}`,
+        `${engine} could not launch; that engine's rendered behavior is unverified.`,
       );
       console.log(
         `UNAVAILABLE ${engine}: host browser dependencies are missing.`,
@@ -166,6 +170,42 @@ try {
       assert.equal(await popup.evaluate(() => window.opener), null);
       await popup.close();
       return 'Click opened the exact supplied token URL with no opener. Destination intercepted; no trade or wallet interaction attempted.';
+    });
+
+    await check(`${engine}: Watermap navigation and fee plan`, async () => {
+      await page.getByRole('link', { name: 'Read the Watermap', exact: true }).click();
+      assert.equal(new URL(page.url()).hash, '#watermap');
+      const map = page.getByRole('region', { name: 'Our Watermap.' });
+      await map.scrollIntoViewIfNeeded();
+      assert.equal(await map.isVisible(), true);
+      const steps = await map.locator('li').allTextContents();
+      assert.equal(steps.length, 3);
+      assert.match(steps[0], /All creator fees will be used to create LinD\/Lindy and LinD\/SOL\s+liquidity pools/);
+      assert.match(steps[1], /will be set up to autocompound on Meteora/);
+      assert.match(steps[2], /Once LinD is liquid enough/);
+      assert.match(steps[2], /bonding new launches on Lindy/);
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.equal(new URL(page.url()).hash, '#watermap');
+      assert.equal(await map.isVisible(), true);
+      await page.locator('.menu-toggle').click();
+      await page.getByRole('navigation', { name: 'Mobile navigation', exact: true })
+        .getByRole('link', { name: 'Watermap', exact: true }).click();
+      assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await map.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: `${output}/${engine}-watermap-390.png` });
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      return 'Hero and mobile navigation reach the three-step plan; a direct hash reload works under /preview/. Both pairs, Meteora autocompounding and the liquidity condition are visible.';
+    });
+
+    await check(`${engine}: supplied mermaid and share metadata`, async () => {
+      const hero = page.locator('.hero-art > img');
+      assert.equal(await hero.getAttribute('src'), './art/mermaid-reference.png');
+      assert.equal(await hero.evaluate((img) => img.naturalWidth), 1254);
+      assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), './art/mermaid-reference.png');
+      assert.equal(await page.locator('meta[name="description"]').getAttribute('content').then((text) => text.includes('Watermap')), true);
+      assert((await stat(resolve(root, 'art/mermaid-reference.png'))).size > 0);
+      return 'The supplied 1254px illustration is the local hero, story image and social image; metadata describes the Watermap.';
     });
 
     await check(`${engine}: copy address success`, async () => {

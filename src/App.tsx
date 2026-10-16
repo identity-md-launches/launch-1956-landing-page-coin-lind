@@ -3,6 +3,7 @@ import { CONTRACT_ADDRESS, EXPLORER_URL, LAUNCH_URL } from './config';
 import { Icon, Seahorse } from './Icons';
 
 const navigation = [
+  { href: '#watermap', label: 'Watermap' },
   { href: '#story', label: 'The story' },
   { href: '#ocean', label: 'The ocean' },
   { href: '#find-lind', label: 'Find LinD' },
@@ -198,6 +199,55 @@ function useOceanMotion() {
   };
 }
 
+function Watermap() {
+  return (
+    <section
+      className="watermap section"
+      id="watermap"
+      aria-labelledby="watermap-title"
+    >
+      <div className="container">
+        <div className="watermap-heading">
+          <h2 id="watermap-title">Our <em>Watermap.</em></h2>
+          <p>A plan for deeper liquidity and new Lindy launches.</p>
+        </div>
+        <ol className="watermap-steps">
+          <li>
+            <span className="watermap-number" aria-hidden="true">01</span>
+            <h3>Build the liquidity</h3>
+            <p>
+              All creator fees will be used to create LinD/Lindy and LinD/SOL
+              liquidity pools (LPs).
+            </p>
+            <div className="watermap-pairs">
+              <span>LinD / Lindy</span>
+              <Icon name="plus" />
+              <span>LinD / SOL</span>
+            </div>
+          </li>
+          <li>
+            <span className="watermap-number" aria-hidden="true">02</span>
+            <h3>Keep the pools growing</h3>
+            <p>
+              These pools will be set up to autocompound on Meteora,
+              reinvesting fees into the LP. As the ecosystem grows, so does
+              the liquidity.
+            </p>
+          </li>
+          <li>
+            <span className="watermap-number" aria-hidden="true">03</span>
+            <h3>Help new launches surface</h3>
+            <p>
+              Once LinD is liquid enough, we will direct creator fees toward
+              bonding new launches on Lindy.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export function App() {
   const { paused, reduced, toggle } = useOceanMotion();
   return (
@@ -210,10 +260,10 @@ export function App() {
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-art" aria-hidden="true">
             <img
-              src="./art/ocean.webp"
+              src="./art/mermaid-reference.png"
               alt=""
-              width="1536"
-              height="1024"
+              width="1254"
+              height="1254"
               fetchPriority="high"
             />
             <div className="hero-shade" />
@@ -235,15 +285,15 @@ export function App() {
               </p>
               <div className="hero-actions">
                 <LaunchLink />
-                <a className="text-link" href="#story">
-                  Discover the story
+                <a className="text-link" href="#watermap">
+                  Read the Watermap
                   <Icon name="down" />
                 </a>
               </div>
               <ContractAddress />
             </div>
             <div className="hero-bottom">
-              <a className="scroll-link" href="#story">
+              <a className="scroll-link" href="#watermap">
                 <span className="scroll-line" aria-hidden="true" />
                 There’s more beneath the surface
                 <Icon name="down" />
@@ -268,25 +318,19 @@ export function App() {
           </div>
         </section>
 
+        <Watermap />
+
         <section
           className="story section container"
           id="story"
           aria-labelledby="story-title"
         >
           <div className="story-art">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <span className="star star-one" aria-hidden="true">
-              ✧
-            </span>
-            <span className="star star-two" aria-hidden="true">
-              ✧
-            </span>
             <img
-              src="./art/mermaid.webp"
-              width="1024"
-              height="1536"
-              alt="A lavender-haired mermaid with a curled blue seahorse tail, swimming beside a tiny seahorse."
+              src="./art/mermaid-reference.png"
+              width="1254"
+              height="1254"
+              alt="A red-haired anime mermaid with a curled seahorse tail, holding a diamond in a turquoise underwater world."
               loading="lazy"
             />
           </div>
@@ -299,8 +343,8 @@ export function App() {
             </h2>
             <p>Somewhere between the sea and your imagination, there’s LinD.</p>
             <p>
-              A world of wandering mermaids, curious seahorses and endless
-              shades of blue. We’re bringing a little ocean magic to Solana.
+              Fiery red hair, a seahorse’s curl and an ocean of blue.
+              We’re bringing a little ocean magic to Solana.
               Come on in. The water’s lovely.
             </p>
             <a href="#ocean" className="text-link">
@@ -427,6 +471,20 @@ export function App() {
                 LinD is a mermaid-inspired coin on Solana. This page introduces
                 its underwater world and links to the token’s LindyLaunch page.
               </p>
+            </details>
+            <details>
+              <summary>
+                What is the Watermap?
+                <Icon name="plus" />
+              </summary>
+              <p>
+                It’s our plan to use creator fees to build liquidity first,
+                then support new launches as LinD’s liquidity develops.
+              </p>
+              <a className="text-link" href="#watermap">
+                Read the fee plan
+                <Icon name="down" />
+              </a>
             </details>
             <details>
               <summary>

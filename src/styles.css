@@ -21,23 +21,27 @@
 }
 
 :root {
-  --blue-950: #061c36;
-  --blue-900: #092844;
-  --blue-800: #133c58;
-  --blue-700: #426681;
-  --blue-300: #a4bfd2;
-  --blue-200: #b4e9f7;
-  --blue-100: #daf4fa;
-  --blue-50: #f0f7fa;
+  --blue-950: #061f30;
+  --blue-900: #0a2c3e;
+  --blue-800: #154258;
+  --blue-700: #466f83;
+  --blue-300: #b0c7d2;
+  --blue-200: #8ee5f4;
+  --blue-100: #d5f6fa;
+  --blue-50: #f2f8fa;
   --color-page: var(--blue-950);
   --color-surface: var(--blue-900);
   --color-hover: var(--blue-800);
   --color-border: var(--blue-700);
   --color-text: var(--blue-50);
   --color-muted: var(--blue-300);
-  --color-accent: var(--blue-200);
-  --color-action: var(--blue-200);
-  --color-action-hover: var(--blue-100);
+  --coral-200: #ffab99;
+  --coral-300: #ff967f;
+  --coral-100: #ffb49f;
+  --color-accent: var(--coral-200);
+  --color-water: var(--blue-200);
+  --color-action: var(--coral-300);
+  --color-action-hover: var(--coral-100);
   --color-on-action: var(--blue-950);
   --color-focus: var(--blue-100);
   --font-body: 'DM Sans', sans-serif;
@@ -264,10 +268,11 @@ main,
   pointer-events: none;
 }
 .hero-art > img {
-  width: 100%;
+  width: 65%;
   height: 100%;
+  margin-inline-start: auto;
   object-fit: cover;
-  object-position: center 44%;
+  object-position: center 30%;
 }
 .hero-shade {
   position: absolute;
@@ -275,17 +280,18 @@ main,
   background:
     linear-gradient(
       90deg,
-      rgba(6, 28, 54, 0.94) 0%,
-      rgba(6, 28, 54, 0.75) 26%,
-      rgba(6, 28, 54, 0.19) 58%,
-      transparent 80%
+      #061f30 0%,
+      #061f30 30%,
+      rgba(6, 31, 48, 0.85) 42%,
+      rgba(6, 31, 48, 0.12) 66%,
+      transparent 85%
     ),
     linear-gradient(
       0deg,
-      #061c36 0%,
-      rgba(6, 28, 54, 0.15) 20%,
+      #061f30 0%,
+      rgba(6, 31, 48, 0.15) 20%,
       transparent 75%,
-      rgba(6, 28, 54, 0.2) 100%
+      rgba(6, 31, 48, 0.2) 100%
     );
 }
 .hero-inner {
@@ -458,6 +464,73 @@ main,
   opacity: 0;
 }
 
+
+.watermap {
+  background: var(--color-surface);
+}
+.watermap-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--space-4);
+  margin-block-end: var(--space-6);
+}
+.watermap-heading p {
+  max-width: 330px;
+  color: var(--color-muted);
+}
+.watermap-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.watermap-steps li {
+  position: relative;
+  min-width: 0;
+}
+.watermap-number {
+  display: block;
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  font-weight: 600;
+  line-height: 1.1;
+  margin-block-end: var(--space-4);
+  font-variant-numeric: tabular-nums;
+}
+.watermap-steps li::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 1.6rem;
+  inset-inline: 4rem 0;
+  height: 1px;
+  background: var(--color-border);
+}
+.watermap-steps h3 {
+  margin-block-end: var(--space-2);
+}
+.watermap-steps p {
+  color: var(--color-muted);
+  max-width: 38ch;
+}
+.watermap-pairs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-block-start: var(--space-3);
+  color: var(--color-water);
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+.watermap-pairs .icon {
+  width: 16px;
+  height: 16px;
+}
+
 .story {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -465,52 +538,17 @@ main,
   gap: 100px;
   padding-block: 80px;
 }
+/* The supplied illustration stays intact; the hero uses a responsive crop. */
 .story-art {
-  position: relative;
   min-width: 0;
-  height: 580px;
-  display: grid;
-  place-items: center;
-  overflow: clip;
+  align-self: center;
 }
 .story-art img {
-  position: relative;
-  width: 410px;
-  height: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  z-index: 1;
-  mask-image: radial-gradient(
-    ellipse 70% 63% at 50% 50%,
-    black 50%,
-    transparent 85%
-  );
-}
-.orbit {
-  position: absolute;
-  width: 92%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(164, 191, 210, 0.14);
-  border-radius: 50%;
-  transform: rotate(-24deg) scaleY(0.83);
-}
-.orbit-two {
-  width: 110%;
-  transform: rotate(32deg) scaleY(0.77);
-}
-.star {
-  position: absolute;
-  color: var(--color-accent);
-  font-size: var(--text-title);
-  z-index: 2;
-}
-.star-one {
-  inset-inline-end: 12%;
-  top: 15%;
-}
-.star-two {
-  inset-inline-start: 4%;
-  bottom: 20%;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-image);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline-offset: -1px;
 }
 .section-seahorse {
   margin-block-end: 20px;
@@ -753,9 +791,7 @@ main,
   .hero-art > img {
     animation: ocean-drift 16s ease-in-out infinite alternate;
   }
-  .story-art img {
-    animation: mermaid-swim 8s ease-in-out infinite alternate;
-  }
+
   .bubbles span {
     animation: bubble-rise calc(14s + var(--i) * 1.2s) linear infinite;
     animation-delay: calc(var(--i) * -2.8s);
@@ -766,14 +802,6 @@ main,
     }
     to {
       transform: scale(1.06) translateY(-6px);
-    }
-  }
-  @keyframes mermaid-swim {
-    from {
-      transform: translateY(7px) rotate(-1deg);
-    }
-    to {
-      transform: translateY(-7px) rotate(1deg);
     }
   }
   @keyframes bubble-rise {
@@ -794,7 +822,6 @@ main,
   }
 }
 .motion-paused .hero-art > img,
-.motion-paused .story-art img,
 .motion-paused .bubbles span {
   animation-play-state: paused;
 }
@@ -821,22 +848,19 @@ main,
     background:
       linear-gradient(
         90deg,
-        rgba(6, 28, 54, 0.96),
-        rgba(6, 28, 54, 0.78) 33%,
-        rgba(6, 28, 54, 0.1) 85%
+        rgba(6, 31, 48, 0.96),
+        rgba(6, 31, 48, 0.78) 33%,
+        rgba(6, 31, 48, 0.1) 85%
       ),
-      linear-gradient(0deg, #061c36, transparent 35%);
+      linear-gradient(0deg, #061f30, transparent 35%);
   }
   .story,
   .find-section,
   .questions {
     gap: 56px;
   }
-  .story-art {
-    height: 520px;
-  }
-  .orbit-two {
-    width: 100%;
+  .header-launch {
+    display: none;
   }
 }
 
@@ -890,17 +914,18 @@ main,
     padding-block: 236px 16px;
   }
   .hero-art > img {
-    object-position: 70% top;
-    height: 520px;
+    width: 100%;
+    object-position: center 22%;
+    height: 480px;
   }
   .hero-shade {
     background: linear-gradient(
       180deg,
-      rgba(6, 28, 54, 0.04) 0,
-      rgba(6, 28, 54, 0.08) 130px,
-      rgba(6, 28, 54, 0.7) 204px,
-      rgba(6, 28, 54, 0.9) 410px,
-      #061c36 590px
+      rgba(6, 31, 48, 0.04) 0,
+      rgba(6, 31, 48, 0.08) 130px,
+      rgba(6, 31, 48, 0.7) 204px,
+      rgba(6, 31, 48, 0.9) 410px,
+      #061f30 590px
     );
   }
   .hero-copy {
@@ -917,7 +942,7 @@ main,
     line-height: 1.6;
   }
   .hero-actions {
-    gap: 20px;
+    gap: 16px;
     margin-block-start: 24px;
     flex-wrap: wrap;
   }
@@ -962,6 +987,42 @@ main,
     padding-inline: 4px;
     gap: 6px;
   }
+  .watermap-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-block-end: var(--space-5);
+  }
+  .watermap-steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  .watermap-steps li {
+    padding-inline-start: 56px;
+  }
+  .watermap-number {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    font-size: var(--text-title);
+    margin: 0;
+  }
+  .watermap-steps li::before {
+    inset-block: 44px -24px;
+    inset-inline: 16px auto;
+    width: 1px;
+    height: auto;
+  }
+  .watermap-steps li:last-child::before {
+    display: none;
+  }
+  .watermap-steps h3 {
+    margin-block-end: 12px;
+  }
+  .watermap-pairs {
+    gap: 8px;
+    margin-block-start: var(--space-2);
+  }
   .story {
     grid-template-columns: 1fr;
     gap: 0;
@@ -970,21 +1031,12 @@ main,
   .story-art {
     max-width: 400px;
     width: 100%;
-    height: 420px;
     margin-inline: auto;
   }
-  .story-art img {
-    width: 300px;
-  }
-  .orbit {
-    width: 85%;
-  }
-  .orbit-two {
-    width: 100%;
-  }
+
   .story-copy {
     max-width: 520px;
-    margin-block-start: 16px;
+    margin-block-start: 40px;
   }
   .story-copy h2 {
     margin-block-end: 24px;

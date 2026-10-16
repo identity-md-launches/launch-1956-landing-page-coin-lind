@@ -1,21 +1,27 @@
 # LinD
 
-A responsive anime-blue ocean landing page for LinD, with mermaids, seahorses, a copyable contract address, the supplied LindyLaunch link, downloadable artwork and an accessible FAQ.
+A responsive landing page for LinD on Solana. The supplied red-haired mermaid sets the visual direction: turquoise water, deep ocean blue and coral accents. The new **Watermap** explains the planned use of creator fees:
+
+1. Create LinD/Lindy and LinD/SOL liquidity pools.
+2. Set the pools up to autocompound on Meteora.
+3. Once LinD is liquid enough, direct fees toward bonding new launches on Lindy.
 
 Contract: `7eJWuvU1JHskxsRNFomerJLHdjoiHR6QhSTm7GgH7rU3`
 
-The complete static export is in **`dist/`**. Source, local runtime assets, `package.json` and `package-lock.json` are included. There are no backend services, secrets, external font requests, analytics or wallet dependencies.
+The existing launch/explorer links, copyable address, ocean artwork download, motion control and FAQ remain available. The Watermap describes a plan; the site does not create pools, configure autocompounding or execute transactions.
 
-## Install and run
+The production export is **`dist/`**, alongside the source, local assets and unchanged `package-lock.json`. All runtime assets are local, links between sections use hashes, and Vite's existing `base: './'` supports static hosting beneath a subpath.
 
-Use Node.js 22.12 or later (validated with Node 24).
+## Install, develop and rebuild
+
+Use Node.js 22.12 or later.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-To typecheck, rebuild and preview the production export:
+For a production build and preview:
 
 ```sh
 npm run typecheck
@@ -23,21 +29,19 @@ npm run build
 npm run preview
 ```
 
-Vite prints the preview URL. Serve `dist/` through an HTTP static server; opening the HTML as a `file://` document is not a supported module-loading setup. Publish the contents of `dist/`, including its `assets/`, `art/`, `fonts/` and favicon. Vite uses `base: './'`, local asset references are relative in the export, and section navigation uses hashes. The export was tested under `/preview/` with all foreign-origin requests blocked.
-
-The publisher uses the included export rather than rebuilding. Rebuild `dist/` after any source or public-asset change and include the refreshed files with the source. Never include `node_modules`, caches or dependency archives.
+Open the HTTP URL printed by Vite. Serve the complete `dist/` directory, including `assets/`, `art/`, `fonts/` and `favicon.svg`. Opening the HTML directly with `file://` is not a supported module-loading setup. Include a fresh export with every source or runtime-asset change; hosting uses the export without rebuilding it. Do not include dependency directories or caches.
 
 ## Validation
 
-Install browser binaries and run the repeatable production-export interaction checks:
+With Playwright browsers available:
 
 ```sh
-npx playwright install chromium webkit
-npm run build
 npm run test:interactions
 ```
 
-Playwright may require system libraries on Linux. The script reports an unavailable browser as a limitation, never as a passing browser check. It serves the export under a subpath in a bounded process and closes its own server and browsers. Results and screenshots go to `test/scratch/interactions/`, which is not delivered.
+On a development machine, `npx playwright install chromium webkit` installs the matching browser binaries. The script also accepts `--playwright /absolute/path/to/playwright/index.mjs` to use an already provided runtime. It creates its own temporary HTTP server, serves the export under `/preview/`, blocks foreign origins, runs the checks and closes the server and browsers. Reports/screenshots go to `test/scratch/interactions/`.
+
+For this assignment, dependencies were installed into a temporary build copy using the existing package manifest and lockfile. Source, configuration and assets were copied unchanged into that build copy, the production commands were run there, and the resulting `dist/` was copied back. The provided Playwright runtime was used; no browser binaries or dependencies were installed into this repository. The final exported file hashes were compared with the tested build copy.
 
 Actual final results:
 
@@ -45,27 +49,28 @@ Actual final results:
 | --- | --- |
 | `npm run typecheck` | Passed, no TypeScript errors |
 | `npm run build` | Passed, 31 modules transformed |
-| `npm run test:interactions` | 12 Chromium checks passed, 0 failed |
-| Pinned `taste.mjs --out test/scratch/taste --offline` | 16/16 checks passed |
-| Axe WCAG A/AA scans | 0 violations with navigation/FAQ collapsed and expanded; image-backed contrast required manual review |
+| Production interaction suite | 14 Chromium checks passed, 0 failed |
+| Pinned design probe, offline | 16/16 checks passed |
+| Axe WCAG A/AA scans | 0 violations, collapsed and expanded navigation/FAQ |
 | Responsive export | No horizontal overflow at 320, 390, 720, 768, 1024 or 1440px |
-| 390px first screen | LinD, the launch action and the complete contract are visible |
-| Resource/console checks | No application console errors or failed local resources |
+| First screen at 390 × 844 | Product, launch action, Watermap link and complete contract visible |
+| Clipboard | Actual Chromium copy checked; denied permission recovers with manual selection |
+| Watermap | Hero/mobile/desktop links, direct hash reload and all three commitments checked |
+| Resource/console health | No application errors or failed local resources |
+| Reflow | 200% root text size and increased text spacing pass at 390px |
 
-For this assignment, dependencies were installed in a temporary build workspace outside the repository. The same source and lockfile were used there for the commands above, and the resulting export was copied back into `dist/`. The final JavaScript and CSS are the exact bundles tested. No dependency directories are included.
+All six Better Interface domains were reviewed. A redundant ARIA label on the static pair names was removed and rechecked. The artwork remains unchanged; contrast was sampled over its rendered background at 320, 390 and 1440px, including both ends of the hero drift. Full details and measurement limits are in [the validation record](docs/validation.md); structured outcomes are in [check-results.json](docs/check-results.json).
 
-The pinned design probe is assignment input and is not redistributed; its final results are retained in `artifacts/check-results.json`. The interaction suite is included in `scripts/validate.mjs` for future checks.
-
-**Limitations:** WebKit could not launch because its Linux system libraries were unavailable, so Safari behavior is unverified. Native screen readers, physical devices and browser-native 200% zoom were not tested. The tested 200% root text enlargement is a separate reflow check. No wallet or trade was performed. Relative social metadata is included; platform-specific unfurl behavior depends on the final hosting URL.
-
-See [DESIGN.md](DESIGN.md) for the implemented system, [the validation record](artifacts/validation.md) for findings and evidence, [asset provenance](artifacts/assets.md) for artwork prompts and font licenses, and [the path budget](artifacts/path-budget.md) for packaging constraints.
+**Limitations:** the browser connector returned `Transport closed`; rendered inspection used the provided Playwright runtime instead. WebKit could not launch, so Safari is unverified. Native screen readers, physical devices and browser-native zoom were not tested. Sampled image contrast does not certify every animation frame or viewport. The external launch destination was intercepted to verify navigation; no wallet, trade or external service availability was tested. Social preview rendering depends on the eventual host and platform.
 
 ## Maintenance
 
-- Token identity and destinations: `src/config.ts`.
-- Content and interactions: `src/App.tsx`.
-- Design tokens, layout and states: `src/styles.css`.
-- Local illustrations and fonts: `public/`.
-- Title, description, favicon and share metadata: `index.html`.
+- Token address and external destinations: `src/config.ts` (unchanged).
+- Content, Watermap and interactions: `src/App.tsx`.
+- Design tokens and responsive layouts: `src/styles.css` and [DESIGN.md](DESIGN.md).
+- Local artwork, favicon and fonts: `public/`; see [asset provenance](docs/assets.md).
+- Social metadata and no-JavaScript fallback: `index.html`.
+- Repeatable interaction checks: `scripts/validate.mjs`.
+- Submission scope and size: [path budget](docs/path-budget.md).
 
-Keep the full contract address visible. The site deliberately directs visitors to the supplied external token page rather than attempting to execute transactions.
+The existing package files, build configuration, dependencies and ignore rules were preserved. Deployment and pool management are outside this website task.
