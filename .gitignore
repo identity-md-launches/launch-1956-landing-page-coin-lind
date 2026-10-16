@@ -1,0 +1,10 @@
+**/node_modules/
+**/.vite/
+**/.cache/
+**/.npm/
+**/.pnpm-store/
+**/playwright-report/
+**/test-results/
+**/*.tsbuildinfo
+test/scratch/
+.playwright-mcp/
